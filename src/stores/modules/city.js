@@ -3,7 +3,8 @@ import { defineStore } from "pinia";
 
 export const useCityStore=defineStore("city",{
     state:()=>({
-        allCities:[]
+        allCities:{},
+        currentCity:{cityName:"北京"}
     }),
     actions:{
         async fetchAllCitiesData(){

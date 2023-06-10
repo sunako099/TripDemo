@@ -35,6 +35,8 @@
 
 <script setup>
 import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useCityStore } from "@/stores/modules/city";
 
 //定义props
 const props=defineProps({
@@ -51,9 +53,14 @@ const indexList=computed(()=>{
     return list
 })
 
-//监听城市的监听
+//监听城市的点击
+const router=useRouter()
+const cityStore=useCityStore()
 function cityClick(city){
-    console.log(city);
+    //获取当前选中的城市存入pinia
+    cityStore.currentCity=city
+    //返回上一级路由
+    router.back()
 }
 </script>
     
