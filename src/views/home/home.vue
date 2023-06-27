@@ -11,6 +11,16 @@
 <script setup>
 import HomeNavBar from './cpns/home-nav-bar.vue';
 import HomeSearchBox  from './cpns/home-search-box.vue'
+
+
+//发送网络请求
+//1.热门建议
+// const hotSuggests=ref([])
+// SRequest.get({
+//   url:"/home/hotSuggests"
+// }).then(res=>{
+//   hotSuggests.value=res.data
+// })
 </script>
 
 <style lang="less" scoped>

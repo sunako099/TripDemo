@@ -5,17 +5,20 @@
       <div class="city" @click="cityClick">{{ currentCity.cityName }}</div>
       <div class="position">
         <span class="text">我的位置</span>
-        <img src="@/assets/img/home/icon_location.png" alt="">
+        <img src="@/assets/img/home/icon_location.png" alt="" />
       </div>
     </div>
     <!-- 日期 -->
-    <div class="section date-range bottom-gray-line " @click="showCalendar = true">
+    <div
+      class="section date-range bottom-gray-line"
+      @click="showCalendar = true"
+    >
       <div class="start">
         <div class="date">
           <span class="tip">入住</span>
           <span class="time">{{ startDate }}</span>
         </div>
-        <div class="stay">共一晚</div>
+        <div class="stay">共{{ stayCount }}晚</div>
       </div>
       <div class="end">
         <div class="date">
@@ -24,55 +27,118 @@
         </div>
       </div>
     </div>
-    <van-calendar 
+    <van-calendar
       v-model:show="showCalendar"
       type="range"
       color="#ff9854"
       :round="false"
       :show-confirm="false"
-      @confirm="onConfirm" 
+      @confirm="onConfirm"
     />
+
+    <!-- 价格/人数选择 -->
+    <div class="section price-counter bottom-gray-line">
+      <div class="start">价格不限</div>
+      <div class="end">人数不限</div>
+    </div>
+    <!-- 关键字 -->
+    <div class="section keyword bottom-gray-line">关键字/位置/民宿名</div>
+
+    <!-- 热门建议 -->
+    <div class="section hot-suggests">
+      <template v-for="(item, index) in hotSuggests" :key="index">
+        <div
+          class="item"
+          :style="{
+            color: item.tagText.color,
+            background: item.tagText.background.color,
+          }"
+        >
+          {{ item.tagText.text }}
+        </div>
+      </template>
+    </div>
+
+    <!-- 搜索按钮 -->
+    <div class="section search-btn">
+      <div class="btn" @click="searchBtnClick">开始搜索</div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { useCityStore } from '@/stores/modules/city';
-import { storeToRefs } from 'pinia';
-import {useRouter} from 'vue-router';
-import {formatMonthDay} from '@/utils/format_date'
-import {ref} from 'vue'
+import { useCityStore } from "@/stores/modules/city";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { formatMonthDay, getDiffDays } from "@/utils/format_date";
+import { ref } from "vue";
+import useHomeStore from '@/stores/modules/home'
 
-const router=useRouter()
+const router = useRouter();
+
+//定义props
+// defineProps({
+//   hotSuggests:{
+//     type:Array,
+//     default:()=>[]
+//   }
+// })
+
+
+//发送网络请求
+const homeStore=useHomeStore()
+homeStore.fetchHotSuggestData()
+
+
+
 //位置→城市选择
-function cityClick(){
-  router.push("/city")
+function cityClick() {
+  router.push("/city");
 }
 //获取当前位置
 //返回经纬度，再传给服务器，获取当前城市名称（未做）
-function positionClick(){
-    navigator.geolocation.getCurrentPosition(res=>{
-        console.log("获取位置成功：",res);
-    },err=>{
-        console.log("获取位置失败",err);
-    },{
-        enableHighAccuracy:true,
-        timeout:5000,
-        maximumAge:0
-    })
+function positionClick() {
+  navigator.geolocation.getCurrentPosition(
+    (res) => {
+      console.log("获取位置成功：", res);
+    },
+    (err) => {
+      console.log("获取位置失败", err);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    }
+  );
 }
 
 //当前城市
-const cityStore=useCityStore()
-const { currentCity }=storeToRefs(cityStore)
-
-//日期范围的处理
-const nowDate=new Date()
-const startDate=ref(formatMonthDay(nowDate))
-const newDate=nowDate.setDate(nowDate.getDate()+1)
-const endDate=ref(formatMonthDay(newDate))
+const cityStore = useCityStore();
+const { currentCity } = storeToRefs(cityStore);
 
 //日历
-const showCalendar = ref(true)
+const showCalendar = ref(false);
+//日期范围的处理
+const nowDate = new Date();
+const newDate = new Date();
+newDate.setDate(nowDate.getDate() + 1);
+const startDate = ref(formatMonthDay(nowDate));
+const endDate = ref(formatMonthDay(newDate));
+const stayCount = ref(getDiffDays(nowDate, newDate));
+
+const onConfirm = (value) => {
+  const selectStartDate = value[0];
+  const selectEndDate = value[1];
+  startDate.value = formatMonthDay(selectStartDate);
+  endDate.value = formatMonthDay(selectEndDate);
+  stayCount.value = getDiffDays(selectStartDate, selectEndDate);
+  //隐藏日历
+  showCalendar.value = false;
+};
+
+//热门建议
+const {hotSuggests}=storeToRefs(homeStore)
 </script>
 
 <style lang="less" scoped>
@@ -162,7 +228,7 @@ const showCalendar = ref(true)
 
 .price-counter {
   .start {
-    border-right: 1px solid  var(--line-color);
+    border-right: 1px solid var(--line-color);
   }
 }
 
