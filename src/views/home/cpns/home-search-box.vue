@@ -72,7 +72,7 @@ import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { formatMonthDay, getDiffDays } from "@/utils/format_date";
 import { ref } from "vue";
-import useHomeStore from '@/stores/modules/home'
+import { useHomeStore } from '@/stores/modules/home'
 
 const router = useRouter();
 
@@ -139,6 +139,18 @@ const onConfirm = (value) => {
 
 //热门建议
 const {hotSuggests}=storeToRefs(homeStore)
+
+//搜索按钮
+function searchBtnClick(){
+  router.push({
+    path:"/search",
+    query:{
+      startDate:startDate.value,
+      endDate:endDate.value,
+      currentCity:currentCity.value.cityName
+    }
+  })
+}
 </script>
 
 <style lang="less" scoped>

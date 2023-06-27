@@ -2,10 +2,13 @@ body {
   font-family: PingFangSC-Regular, Helvetica Neue, sans-serif;
   font-size: 14px;
   background-color: #f7f8fb;
+  overflow-y: scroll;
 }
 
 :root {
   --primary-color: #ff9645;
+  --line-color:#faf8f9;
+  --theme-linear-gradient:linear-gradient(90deg,#fa8c1d,#fcaf3f);
   --van-primary-color: var(--primary-color);
   --van-nav-bar-title-text-color: var(--primary-color) !important;
   /* --van-tabs-bottom-bar-height: 0 !important; */
