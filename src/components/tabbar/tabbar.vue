@@ -13,11 +13,16 @@
 <script setup>
 import tabbarData from "@/assets/data/tabbar";
 import { getAssetURL } from "@/utils/load_assets";
-import {ref} from "vue"
-import {useRouter} from "vue-router"
+import {ref, watch} from "vue"
+import {useRoute, useRouter} from "vue-router"
 
-
+const route=useRoute()
 const currentIndex=ref(0)
+watch(route,(newRoute)=>{
+  const index=tabbarData.findIndex(item=>item.path===newRoute.path)
+  if(index===-1) return
+  currentIndex.value=index
+})
 const router=useRouter()
 function itemClick(index,item){
     currentIndex.value=index
@@ -34,13 +39,14 @@ function itemClick(index,item){
   height: 50px;
   display: flex;
   border-top: 1px solid #f3f3f3;
-
+  
   .tab-bar-item {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: white;
 
     &.active{
         color: var(--primary-color);

@@ -5,7 +5,8 @@ export const useHomeStore=defineStore("home",{
     state:()=>({
         hotSuggests:[],
         categories:[],
-        houselist:[]
+        houselist:[],
+        currentPage:1
     }),
     actions:{
         async fetchHotSuggestData(){
@@ -17,8 +18,9 @@ export const useHomeStore=defineStore("home",{
             this.categories=res.data
         },
         async fetchHouselistData(){
-            const res=await getHouselistData()
-            this.houselist=res.data
+            const res=await getHouselistData(this.currentPage)
+            this.houselist.push(...res.data)
+            this.currentPage++
         }
     }
 })

@@ -12,11 +12,11 @@ export function getHomeCategories(){
     })
 }
 
-export function getHouselistData(){
+export function getHouselistData(currentPage=1){
     return SRquest.get({
         url:"/home/houselist",
         params:{        //如果是post请求这里是data:{}还记得吗？
-            page:1
+            page:currentPage
         }
     })
 }
